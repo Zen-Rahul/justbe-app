@@ -38,7 +38,6 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build project
         id: Android
-        uses: actions/checkout@v1
         run: |
           nuget restore
           cd Droid
