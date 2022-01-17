@@ -38,14 +38,12 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build project
          Android:
-            runs-on: macos-latest
             steps:
-            - uses: actions/checkout@v1
             - name: Android
+              uses: actions/checkout@v1
               run: |
-                cd Blank
                 nuget restore
-                cd Blank.Android
+                cd Droid
                 msbuild JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
       - name: sonar analyze
         env:
