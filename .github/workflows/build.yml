@@ -1,4 +1,4 @@
-name: CI for Sonar analyser
+name: CI for Sonar analyzer
 on:
   push:
     branches:
@@ -37,12 +37,12 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build project
-        steps:
-          - name: Android
-            run: |
-              nuget restore
-              cd Droid
-              msbuild JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
+        id: Android
+        uses: actions/checkout@v1
+        run: |
+          nuget restore
+          cd Droid
+          msbuild JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
       - name: sonar analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
