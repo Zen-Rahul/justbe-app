@@ -48,5 +48,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Zen-Rahul_justbe-app" /o:"zen-rahul" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          MSBuild.SonarQube.Runner.exe JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
+          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin" MsBuild.exe JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
