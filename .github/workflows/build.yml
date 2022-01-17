@@ -52,26 +52,26 @@ jobs:
               outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
 
             steps:
-            - task: NuGetToolInstaller@1
+            - name: NuGetToolInstaller@1
 
-            - task: NuGetCommand@2
-              inputs:
+            - name: NuGetCommand@2
+              run:
                 restoreSolution: '**/*.sln'
 
-            - task: XamarinAndroid@1
-              inputs:
+            - name: XamarinAndroid@1
+              run:
                 projectFile: '**/*droid*.csproj'
                 outputDirectory: '$(outputDirectory)'
                 configuration: '$(buildConfiguration)'
                 msbuildVersionOption: '16.0'
 
-            - task: AndroidSigning@3
-              inputs:
+            - name: AndroidSigning@3
+              run:
                 apksign: false
                 zipalign: false
                 apkFiles: '$(outputDirectory)/*.apk'
 
-            - task: PublishBuildArtifacts@1
-              inputs:
+            - name: PublishBuildArtifacts@1
+              run:
                 pathtoPublish: '$(outputDirectory)'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
