@@ -1,4 +1,4 @@
-name: Build
+name: CI for Sonar analyser
 on:
   push:
     branches:
@@ -39,7 +39,6 @@ jobs:
       - name: Build project
         steps:
           - name: Android
-            uses: actions/checkout@v1
             run: |
               nuget restore
               cd Droid
