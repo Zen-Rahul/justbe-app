@@ -43,4 +43,35 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Zen-Rahul_justbe-app" /o:"zen-rahul" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          - job: Android
+            pool:
+              vmImage: 'windows-2019'
+
+            variables:
+              buildConfiguration: 'Release'
+              outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
+
+            steps:
+            - task: NuGetToolInstaller@1
+
+            - task: NuGetCommand@2
+              inputs:
+                restoreSolution: '**/*.sln'
+
+            - task: XamarinAndroid@1
+              inputs:
+                projectFile: '**/*droid*.csproj'
+                outputDirectory: '$(outputDirectory)'
+                configuration: '$(buildConfiguration)'
+                msbuildVersionOption: '16.0'
+
+            - task: AndroidSigning@3
+              inputs:
+                apksign: false
+                zipalign: false
+                apkFiles: '$(outputDirectory)/*.apk'
+
+            - task: PublishBuildArtifacts@1
+              inputs:
+                pathtoPublish: '$(outputDirectory)'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
