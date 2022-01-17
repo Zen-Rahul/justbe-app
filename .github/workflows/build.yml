@@ -47,31 +47,30 @@ jobs:
             pool:
               vmImage: 'windows-2019'
 
-            variables:
-              buildConfiguration: 'Release'
-              outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
+           build:
+
+            runs-on: macos-latest
 
             steps:
-            - name: NuGetToolInstaller@1
+            - uses: actions/checkout@v2
+            - name: Set default Xamarin SDK versions
+              run: |
+                $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=14.10
+            
+            - name: Set default Xcode 12.3
+              run: |
+                XCODE_ROOT=/Applications/Xcode_12.3.0.app
+                echo "MD_APPLE_SDK_ROOT=$XCODE_ROOT" >> $GITHUB_ENV
+                sudo xcode-select -s $XCODE_ROOT
 
-            - name: NuGetCommand@2
-              run:
-                restoreSolution: '**/*.sln'
+            - name: Setup .NET Core SDK 5.0.x
+              uses: actions/setup-dotnet@v1
+              with:
+                dotnet-version: '5.0.x'
 
-            - name: XamarinAndroid@1
-              run:
-                projectFile: '**/*droid*.csproj'
-                outputDirectory: '$(outputDirectory)'
-                configuration: '$(buildConfiguration)'
-                msbuildVersionOption: '16.0'
+            - name: Install dependencies
+              run: nuget restore "..\..\JustBeApp.sln"
 
-            - name: AndroidSigning@3
-              run:
-                apksign: false
-                zipalign: false
-                apkFiles: '$(outputDirectory)/*.apk'
-
-            - name: PublishBuildArtifacts@1
-              run:
-                pathtoPublish: '$(outputDirectory)'
+            - name: Build
+              run: msbuild <csproj_file_path> /p:Configuration=Debug /p:Platform=iPhoneSimulator /t:Rebuild
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
