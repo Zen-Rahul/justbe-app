@@ -41,7 +41,7 @@ jobs:
         run: |
           nuget restore
           cd Droid
-          msbuild JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
+          MSBuild.exe JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
       - name: sonar analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -49,5 +49,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Zen-Rahul_justbe-app" /o:"zen-rahul" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-           
+           MSBuild.exe JustBe.Droid.csproj /verbosity:normal /t:Rebuild /p:Configuration=Debug
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
